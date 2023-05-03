@@ -12,6 +12,8 @@ import java.util.Set;
 public class Product implements Serializable {
     private static final long serialVersionUID = 1L;
 
+    // ANOTATION ID PARA DIZERMOS QUAL ATRIBUTO É O ID DA NOSSA CLASSE
+    // GENERATED VALUE QUANDO ESTÁ COM GENERATIONTYPE IDENTITY SIGNIFICA QUE O BANCO SERÁ RESPONSÁVEL POR GERAR ID'S.
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -20,7 +22,12 @@ public class Product implements Serializable {
     private Double price;
     private String imgUrl;
 
-    @Transient
+    // ANOTATION @ManyToMany SIGNIFICA DE MUITOS PARA MUITOS, OU SEJA UM PRODUTO PODE TER MUITAS CATEGORIAS E UMA CATEGORIA PODE ESTAR RELACIONADA...
+    // ...A MUITOS PRODUTOS, NESSE CASO PASSAMOS A ANOTATION @JoinTable DIZENDO QUE QUEREMOS CRIAR UMA TABELA COM NOME tb_product_category, UMA DAS COLUNAS...
+    // ...AMARRAÇÃO SERÁ product_id E O INVERSE SIGNIFICA A OUTRA CLASSE QUE SERÁ AMARRADA A ESSA, POR ESTARMOS NA CLASSE DE PRODUTO, COLOCAMOS O INVERSO A DE CATEGORIA...
+    // ...MAS PODERIA SER AO CONTRÁRIO.
+    @ManyToMany
+    @JoinTable(name = "tb_product_category", joinColumns = @JoinColumn(name = "product_id"), inverseJoinColumns = @JoinColumn(name = "category_id"))
     private Set<Category> categories = new HashSet<>();
 
     public Product(){

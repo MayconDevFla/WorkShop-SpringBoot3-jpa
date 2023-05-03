@@ -1,5 +1,6 @@
 package com.teste.demo.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 import java.io.Serializable;
@@ -17,7 +18,10 @@ public class Category implements Serializable {
     private Long id;
     private String name;
 
-    @Transient
+    // @JsonIgnore EVITA QUE UMA CATEGORIA FIQUE CHAMANDO UM PRODUTO EM UM LOOP INFINITO E ASSIM VICE VERSA, PASSAMOS ESSA ANOTATION...
+    // DEIXANDO CLARO QUE NESSA CLASSE SERÁ IGNORADO o getProducts.
+    @JsonIgnore
+    @ManyToMany(mappedBy = "categories")
     private Set<Product> products = new HashSet<>();
 
     public Category(){

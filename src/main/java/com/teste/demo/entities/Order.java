@@ -7,7 +7,9 @@ import jakarta.persistence.*;
 
 import java.io.Serializable;
 import java.time.Instant;
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 
 @Entity
 @Table(name = "tb_order")
@@ -18,14 +20,22 @@ public class Order implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    // @JsonFormat FORMATANDO DATA E HORA PARA CRUD NO BANCO DE DADOS
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss'Z'", timezone = "GMT")
     private Instant moment;
 
     private Integer orderStatus;
 
+    // @ManyToOne SIGNIFICA DE UM PARA MUITOS, OU SEJA, UM CLIENTE PODE TER MUITOS PEDIDOS E ESSES MUITOS PEDIDOS ESTÃO RELACIONADO A APENAS UM CLIENTE.
+    // @JoinColumn AQUI ESTAMOS DIZENDO QUAL COLUNA DA TABELA DE PEDIDOS É A CHAVE ESTRANGEIRA
     @ManyToOne
     @JoinColumn(name = "client_id")
     private User client;
+
+    //@OneToMany UM PARA MUITOS. UM PEDIDO PODE TER MUITOS OrderItem. EM mappedBy ESTAMOS FAZENDO AMARRAÇÃO COM A CLASSE DE ORDER E ORDERITEM PASSANDO O ID DA CLASSE PK COMPOSTA...
+    // E ESPECIFICANDO QUE O ID QUE ESTAMOS PASSANDO É O DO PEDIDO.
+    @OneToMany(mappedBy = "id.order")
+    private Set<OrderItem> items = new HashSet<>();
 
     public Order(){
     }
@@ -69,6 +79,10 @@ public class Order implements Serializable {
 
     public void setClient(User client) {
         this.client = client;
+    }
+
+    public Set<OrderItem> getItems(){
+        return items;
     }
 
     @Override
